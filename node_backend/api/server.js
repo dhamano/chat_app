@@ -29,7 +29,7 @@ server.use(helmet());
 server.use(express.json());
 server.use(cors());
 
-server.use('/auth/users', usersRouter);
+server.use('/auth', usersRouter);
 
 server.get('/', (req, res) => res.status(200).send('<h2>5x5</h2>'))
 
