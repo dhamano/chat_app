@@ -9,7 +9,8 @@ function App() {
 
     const [isCompatible, setIsCompatible] = useState();
     const [userColor, setUserColor] = useState(false);
-    const [userName, setUserName] = useState(false);
+    const [username, setUsername] = useState(false);
+    const [loginOrReg, setLoginOrReg] = useState('login');
 
     const [userMessage, setUserMessage] = useState('')
 
@@ -34,15 +35,41 @@ function App() {
         );
     };
 
-    const connection = new WebSocket('ws://127.0.0.1/8000');
+    const connection = new WebSocket('ws://127.0.0.1:8000');
 
     connection.onopen = function() {
         
     }
 
+    function onClickHandler(e) {
+        e.persist()
+        console.log('e.target',e.target.innerText);
+        if(e.target.innerText === "Login") setLoginOrReg('Login');
+        if(e.target.innerText === "Register") setLoginOrReg('Register');
+        console.log('click', loginOrReg);
+    }
+
+    let TEMP_REMOVE_WHEN_USED = {
+        userColor,
+        setUserColor,
+        userMessage,
+        setUserMessage
+    }
+
+    console.log("TEMP_REMOVE_WHEN_USED",TEMP_REMOVE_WHEN_USED);
+    
+    let loginRegVals = {
+        setUsername,
+        username,
+        loginOrReg,
+        setLoginOrReg,
+        onClickHandler
+    } 
+
     return (
         <div className="App">
-           <Route exact path="/" render={ props => localStorage.getItem("token") ? <Redirect to="/home" /> : <Login {...props} setUserName={setUserName} userName={userName} /> } />
+           <Route exact path="/" render={ props => localStorage.getItem("token") ? <Redirect to="/home" /> : <Login {...props} loginRegVals={loginRegVals}  /> } />
+           <Route path="/register" render={ props => <Login {...props} loginRegVals={loginRegVals}  /> } />
            <PrivateRoute path="/home" component={Messaging} />
         </div>
     );
