@@ -1,0 +1,54 @@
+.login-reg-page {
+    min-width: 100vw;
+    min-height: 100vh;
+    display: table;
+
+    .login-reg-container {
+        display: table-cell;
+        vertical-align: middle;
+
+        .form-container {
+            min-width: 300px;
+            max-width: 600px;
+            width: calc(100vw - 40px);
+            margin: auto;
+
+            ul {
+                margin: 0;
+                padding: 20px;
+                display: flex;
+                align-items: center;
+                align-content: space-around;
+
+                li {
+                    width: 50%;
+                    display: block;
+                    text-align: center;
+                }
+            }
+
+            form {
+                padding: 0 20px 20px;
+
+                div {
+                    margin-bottom: 20px;
+                    position: relative;
+                }
+
+                label {
+                    position: absolute;
+                    bottom: 0;
+                    right: 5px;
+                }
+
+                input {
+                    height: 40px;
+                    width: 100%;
+                    position: relative;
+                    z-index: 5;
+                }
+            }
+        }
+
+    }
+}
