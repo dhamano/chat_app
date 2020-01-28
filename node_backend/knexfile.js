@@ -1,4 +1,4 @@
-const lovalPg = {
+const localPg = {
     host: 'localhost',
     port: '5432',
     database: process.env.DB_NAME,

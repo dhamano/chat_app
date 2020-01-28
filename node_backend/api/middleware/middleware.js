@@ -1,4 +1,5 @@
-const secrets = require('../../config/secrets');
+const jwt = require('jsonwebtoken');
+const secrets = process.env.JWT_SECRET || "Work! Work! Work!";
 
 module.exports = {
     checkUserInfo,

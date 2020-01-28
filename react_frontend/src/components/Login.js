@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const Login = props => {
     const [password, setPassword] = useState(false);
@@ -71,6 +72,12 @@ const Login = props => {
             </div>
         </div>
     )
+    console.log("props login.js", props);
 };
+
+Login.propTypes = {
+    userColor: PropTypes.bool || PropTypes.string,
+    userMessage: PropTypes.string
+}
 
 export default Login;
