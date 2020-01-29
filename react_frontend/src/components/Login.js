@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { login, register } from '../services';
 
 const Login = props => {
     const [password, setPassword] = useState(false);
@@ -8,63 +9,70 @@ const Login = props => {
     const [passwordErr, setPasswordErr] = useState(false);
 
     function handleOnChange (e) {
-        if(e.target.name === 'username') props.loginRegVals.setUserName(e.target.value);
+        if(e.target.name === 'username') props.loginRegVals.setUsername(e.target.value);
         if(e.target.name === 'password') setPassword(e.target.value);
         if(e.target.name === 'confirm-password') setConfirmPassword(e.target.value);
     };
 
-    function handleSubmitLogin (e) {
+    async function handleSubmitLogin (e) {
         e.preventDefault();
         console.log('LOGIN SUBMIT', e.target.value);
+        await login({ username: props.loginRegVals.username, password })
+                            .then(res => console.log(res))
     }
 
-    function handleSubmitRegister (e) {
+    async function handleSubmitRegister (e) {
         e.preventDefault();
         if( password !== confirmPassword) {
             setPasswordErr(true);
             return;
         }
         console.log('REGISTER SUBMIT', e.target.value);
+        await register({ username: props.loginRegVals.username, password })
+                            .then(res => console.log(res))
     }
+
+    console.log('loginRegVals',props.loginRegVals);
+    console.log('prop', props);
 
     return (
         <div className="login-reg-page">
             <div className="login-reg-container">
-                <div className="form-container">
+                <div className={`form-container ${props.loginRegVals.loginOrReg === 'Login' ? 'login' : 'register'}`}>
                     <ul>
-                        <li><NavLink onClick={props.loginRegVals.onClickHandler} to="/">Login</NavLink></li>
+                        <li><NavLink onClick={props.loginRegVals.onClickHandler} exact to="/">Login</NavLink></li>
                         <li><NavLink onClick={props.loginRegVals.onClickHandler} to="/register">Register</NavLink></li>
                     </ul>
                     { props.loginRegVals.loginOrReg === "Login" ? (
                     <div className="login">
                         <form onSubmit={handleSubmitLogin}>
                             <div>
+                                <input id="username" onChange={handleOnChange} value={!props.loginRegVals.username ? '' : props.loginRegVals.username} name="username" type="text" placeholder="username" autoComplete="username" required />
                                 <label htmlFor="username">username</label>
-                                <input id="username" onChange={handleOnChange} value={!props.loginRegVals.username ? '' : props.loginRegVals.username} name="username" type="text" placeholder="username" autoComplete="username" />
                             </div>
                             <div>
+                                <input id="password" onChange={handleOnChange} value={!password ? '' : password} name="password" type="password" placeholder="password" autoComplete="current-password" required />
                                 <label htmlFor="password">password</label>
-                                <input id="password" onChange={handleOnChange} value={!password ? '' : password} name="password" type="password" placeholder="password" autoComplete="current-password" />
                             </div>
-                            <input type="submit" value="Login" />
+                            <button type="submit">Login</button>
                         </form>
                     </div>
                     ) : (
                     <div className="register">
                         <form onSubmit={handleSubmitRegister}>
                             <div>
+                                <input id="reg-username" onChange={handleOnChange} value={!props.loginRegVals.username ? '' : props.loginRegVals.username} name="username" type="text" placeholder="username" autoComplete="username" required />
                                 <label htmlFor="reg-username">username</label>
-                                <input id="reg-username" onChange={handleOnChange} value={!props.loginRegVals.username ? '' : props.loginRegVals.username} name="username" type="text" placeholder="username" autoComplete="username" />
                             </div>
                             <div>
+                                <input id="reg-password" className={ passwordErr ? 'error' : '' } onChange={handleOnChange} value={!password ? '' : password} name="password" type="password" placeholder="password" autoComplete="new-password" required />
                                 <label htmlFor="reg-password">password</label>
-                                <input id="reg-password" className={ passwordErr ? 'error' : '' } onChange={handleOnChange} value={!password ? '' : password} name="password" type="password" placeholder="password" autoComplete="new-password" />
                             </div>
                             <div>
+                                <input id="confirmPassword" className={ passwordErr ? 'error' : '' } onChange={handleOnChange} value={!confirmPassword ? '' : confirmPassword} name="confirm-password" type="password" placeholder="confirm password" autoComplete="new-password" required />
                                 <label htmlFor="confirmPassword">confirm password</label>
-                                <input id="confirmPassword" className={ passwordErr ? 'error' : '' } onChange={handleOnChange} value={!confirmPassword ? '' : confirmPassword} name="confirm-password" type="password" placeholder="confirm password" autoComplete="new-password" />
                             </div>
-                            <input type="submit" value="Register" />
+                            <button type="submit">Register</button>
                         </form>
                     </div>
                     )}
@@ -72,12 +80,18 @@ const Login = props => {
             </div>
         </div>
     )
-    console.log("props login.js", props);
 };
 
 Login.propTypes = {
-    userColor: PropTypes.bool || PropTypes.string,
-    userMessage: PropTypes.string
-}
+    loginRegVals : PropTypes.objectOf( 
+        PropTypes.shape({
+            username        : PropTypes.string || PropTypes.bool,
+            setUsername     : PropTypes.func,
+            loginOrReg      : PropTypes.string,
+            setLoginOrReg   : PropTypes.func,
+            onClickHandler  : PropTypes.func
+        })
+        )
+};
 
 export default Login;
