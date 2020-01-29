@@ -8,7 +8,7 @@ import Messaging from './components/Messaging';
 
 function App() {
 
-    const [isCompatible, setIsCompatible] = useState();
+    const [isCompatible, setIsCompatible] = useState(false);
     const [userColor, setUserColor] = useState(false);
     const [username, setUsername] = useState(false);
     const [loginOrReg, setLoginOrReg] = useState('Login');

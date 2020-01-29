@@ -16,6 +16,9 @@ import Login from '../components/Login';
 
 
 describe('<App />', () => {
+    let props,
+        wrapper;
+
     it('should match snapshot', () => {
         const AppWithRouter = withRouter(App);
         const tree = renderer.create(<Router><AppWithRouter /></Router>).toJSON();
