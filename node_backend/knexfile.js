@@ -1,14 +1,31 @@
 const localPg = {
     host: 'localhost',
     port: '5432',
-    database: process.env.DB_NAME,
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD
+    database: 'postgres',
+    user: 'dhamano',
+    password: 'password'
 }
 const productionDBConnection = process.env.DATABASE_URL || localPg;
 
 module.exports = {
     development: {
         client: 'pg',
+        connection: productionDBConnection,
+        migrations: {
+            directory: './data/migrations'
+        },
+        seeds: {
+            directory: './data/seeds'
+        }
+    },
+    production: {
+        client: 'pg',
+        connection: productionDBConnection,
+        migrations: {
+            directory: './data/migrations'
+        },
+        seeds: {
+            directory: './data/seeds'
+        }
     }
 }

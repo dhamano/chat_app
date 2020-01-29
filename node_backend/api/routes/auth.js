@@ -20,12 +20,33 @@ router.post('/register', mw.checkUserInfo, async (req, res) => {
 });
 
 router.post('/login', mw.checkUserInfo, async (req,res) => {
+    console.log('LOGIN!')
     let { username, password } = req.body;
+    console.log('username',username,'password',password)
+
+    await Users.findByFilter({ username })
+          .first()
+          .then(user => {
+              console.log('user', user)
+            if(user && bcrypt.compareSync(password, user.password)) {
+              const token = getToken(user);
+              res.status(200).json({
+                username : user.username,
+                token
+              });
+            } else {
+              res.status(401).json({ error: 'Invalid Credentials' });
+            }
+          })
+          .catch( err => {
+            res.status(500).json({ error: 'There was an error with login' });
+          })
+    /*
     try {
         await Users.loginFindBy({username})
                     .first()
                     .then( user => {
-                        if(use && bcrypt.compareSync(password, user.password)) {
+                        if(user && bcrypt.compareSync(password, user.password)) {
                             const token = getToken(user);
                             res.status(200).json({
                                 username: user.username,
@@ -39,6 +60,7 @@ router.post('/login', mw.checkUserInfo, async (req,res) => {
     catch(err) {
         res.status(500).json({ message: 'There was an error processing your login.' });
     };
+    //*/
 });
 
 function getToken(user) {

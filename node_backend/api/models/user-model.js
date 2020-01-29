@@ -2,18 +2,24 @@ const db = require('../config/config');
 
 module.exports = {
     add,
-    findById
+    findById,
+    findByFilter
 }
 
-function findById(id) {
-    return db('users')
+async function findById(id) {
+    return await db('users')
                 .where({id})
                 .select('id', 'username')
                 .first();
 };
 
-function add(userCreds) {
-    return db('users')
+async function findByFilter(filter) {
+    return await db('users')
+            .where('username');
+}
+
+async function add(userCreds) {
+    return await db('users')
                 .insesrt(userCreds, 'id')
                 .then(ids => {
                     const [id] = ids;
