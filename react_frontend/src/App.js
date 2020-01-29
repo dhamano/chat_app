@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect, Route } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import PrivateRoute from './utilities/PrivateRoute';
 import Login from './components/Login';
@@ -10,7 +11,7 @@ function App() {
     const [isCompatible, setIsCompatible] = useState();
     const [userColor, setUserColor] = useState(false);
     const [username, setUsername] = useState(false);
-    const [loginOrReg, setLoginOrReg] = useState('login');
+    const [loginOrReg, setLoginOrReg] = useState('Login');
 
     const [userMessage, setUserMessage] = useState('')
 
@@ -25,6 +26,9 @@ function App() {
 
         let isCompatible = checkIfCompaitbleWithWebSocket();
         setIsCompatible(isCompatible);
+        return function cleanup() {
+            checkIfCompaitbleWithWebSocket();
+        };
     }, []);
 
     if (!isCompatible) {
@@ -35,18 +39,15 @@ function App() {
         );
     };
 
-    const connection = new WebSocket('ws://127.0.0.1:8000');
+    // const connection = new WebSocket('ws://127.0.0.1:8000');
 
-    connection.onopen = function() {
+    // connection.onopen = function() {
         
-    }
+    // }
 
     function onClickHandler(e) {
-        e.persist()
-        console.log('e.target',e.target.innerText);
         if(e.target.innerText === "Login") setLoginOrReg('Login');
         if(e.target.innerText === "Register") setLoginOrReg('Register');
-        console.log('click', loginOrReg);
     }
 
     let TEMP_REMOVE_WHEN_USED = {
@@ -67,11 +68,11 @@ function App() {
     } 
 
     return (
-        <>
+        <div className="App">
            <Route exact path="/" render={ props => localStorage.getItem("token") ? <Redirect to="/home" /> : <Login {...props} loginRegVals={loginRegVals}  /> } />
            <Route path="/register" render={ props => <Login {...props} loginRegVals={loginRegVals}  /> } />
            <PrivateRoute path="/home" component={Messaging} />
-        </>
+        </div>
     );
 }
 
