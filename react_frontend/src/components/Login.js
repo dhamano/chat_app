@@ -27,13 +27,12 @@ const Login = props => {
             setPasswordErr(true);
             return;
         }
-        console.log('REGISTER SUBMIT', e.target.value);
         await register({ username: props.loginRegVals.username, password })
                             .then(res => console.log(res))
     }
 
-    console.log('loginRegVals',props.loginRegVals);
-    console.log('prop', props);
+    // console.log('loginRegVals',props.loginRegVals);
+    // console.log('prop', props);
 
     return (
         <div className="login-reg-page">
@@ -82,16 +81,16 @@ const Login = props => {
     )
 };
 
-Login.propTypes = {
-    loginRegVals : PropTypes.objectOf( 
-        PropTypes.shape({
-            username        : PropTypes.string || PropTypes.bool,
-            setUsername     : PropTypes.func,
-            loginOrReg      : PropTypes.string,
-            setLoginOrReg   : PropTypes.func,
-            onClickHandler  : PropTypes.func
-        })
-        )
-};
+// Login.propTypes = {
+//     loginRegVals : PropTypes.objectOf( 
+//         PropTypes.shape({
+//             username        : PropTypes.string,
+//             setUsername     : PropTypes.func,
+//             loginOrReg      : PropTypes.string,
+//             setLoginOrReg   : PropTypes.func,
+//             onClickHandler  : PropTypes.func
+//         })
+//         )
+// };
 
 export default Login;
