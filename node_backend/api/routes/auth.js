@@ -1,7 +1,9 @@
 const express = require('express');
-const bcrypt = require*('bcrypt');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const secret = process.env.JWT_SECRET || "Work! Work! Work!";
 const mw = require('../middleware/middleware');
+const { userValidationRules, validate } = require('../middleware/validator');
 
 const Users = require('../models/user-model');
 
@@ -19,32 +21,11 @@ router.post('/register', mw.checkUserInfo, async (req, res) => {
     }
 });
 
-router.post('/login', mw.checkUserInfo, async (req,res) => {
-    console.log('LOGIN!')
+router.post('/login', mw.checkUserInfo, userValidationRules(), validate, async (req,res) => {
     let { username, password } = req.body;
-    console.log('username',username,'password',password)
 
-    await Users.findByFilter({ username })
-          .first()
-          .then(user => {
-              console.log('user', user)
-            if(user && bcrypt.compareSync(password, user.password)) {
-              const token = getToken(user);
-              res.status(200).json({
-                username : user.username,
-                token
-              });
-            } else {
-              res.status(401).json({ error: 'Invalid Credentials' });
-            }
-          })
-          .catch( err => {
-            res.status(500).json({ error: 'There was an error with login' });
-          })
-    /*
     try {
-        await Users.loginFindBy({username})
-                    .first()
+        await Users.findByFilter({ username })
                     .then( user => {
                         if(user && bcrypt.compareSync(password, user.password)) {
                             const token = getToken(user);
@@ -58,10 +39,15 @@ router.post('/login', mw.checkUserInfo, async (req,res) => {
                     });
     }
     catch(err) {
+        console.log('login error',err);
         res.status(500).json({ message: 'There was an error processing your login.' });
     };
-    //*/
+
 });
+
+function getHash(toHash) {
+  return bcrypt.hashSync(toHash, 14);
+}
 
 function getToken(user) {
     const payload = {

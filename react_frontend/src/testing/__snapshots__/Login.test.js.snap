@@ -1,0 +1,80 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Login /> at login should match snapshot since login is deault 1`] = `
+<div
+  className="login-reg-page"
+>
+  <div
+    className="login-reg-container"
+  >
+    <div
+      className="form-container login"
+    >
+      <ul>
+        <li>
+          <NavLink
+            exact={true}
+            to="/"
+          >
+            Login
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/register"
+          >
+            Register
+          </NavLink>
+        </li>
+      </ul>
+      <div
+        className="login"
+      >
+        <form
+          onSubmit={[Function]}
+        >
+          <div>
+            <input
+              autoComplete="username"
+              id="username"
+              name="username"
+              onChange={[Function]}
+              placeholder="username"
+              required={true}
+              type="text"
+              value=""
+            />
+            <label
+              htmlFor="username"
+            >
+              username
+            </label>
+          </div>
+          <div>
+            <input
+              autoComplete="current-password"
+              id="password"
+              name="password"
+              onChange={[Function]}
+              placeholder="password"
+              required={true}
+              type="password"
+              value=""
+            />
+            <label
+              htmlFor="password"
+            >
+              password
+            </label>
+          </div>
+          <button
+            type="submit"
+          >
+            Login
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+`;

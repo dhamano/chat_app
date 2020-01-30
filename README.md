@@ -2,8 +2,9 @@
 
 Project to become more familiar with WebSockets.
 
- - [ ] Login and Registration
+ - [ ] Login
+ - [ ] Registration
  - [ ] Messaging input and display
  - [ ] Account Updating
  - [ ] WebSocket Server
- - [ ] PostgreSQL DB
+ - [x] PostgreSQL DB

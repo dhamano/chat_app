@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import PropTypes from 'prop-types';
 
 import PrivateRoute from './utilities/PrivateRoute';
 import Login from './components/Login';
@@ -8,7 +7,7 @@ import Messaging from './components/Messaging';
 
 function App() {
 
-    const [isCompatible, setIsCompatible] = useState();
+    const [isCompatible, setIsCompatible] = useState(true);
     const [userColor, setUserColor] = useState(false);
     const [username, setUsername] = useState(false);
     const [loginOrReg, setLoginOrReg] = useState('Login');
@@ -57,7 +56,7 @@ function App() {
         setUserMessage
     }
 
-    console.log("TEMP_REMOVE_WHEN_USED",TEMP_REMOVE_WHEN_USED);
+    // console.log("TEMP_REMOVE_WHEN_USED",TEMP_REMOVE_WHEN_USED);
     
     let loginRegVals = {
         setUsername,

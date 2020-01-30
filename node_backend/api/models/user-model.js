@@ -7,22 +7,41 @@ module.exports = {
 }
 
 async function findById(id) {
-    return await db('users')
-                .where({id})
-                .select('id', 'username')
-                .first();
+    try {
+        return await db('users')
+                    .where({id})
+                    .select('id', 'username')
+                    .first();
+    }
+    catch(err) {
+        console.log("findById: ERR",err);
+        console.error(err);
+    }
 };
 
 async function findByFilter(filter) {
-    return await db('users')
-            .where('username');
+    try {
+        return await db('users')
+                    .where(filter)
+                    .first();         
+    }
+    catch(err) {
+        console.log("findByFilter: ERR",err);
+        console.error(err);
+    }
 }
 
 async function add(userCreds) {
-    return await db('users')
-                .insesrt(userCreds, 'id')
-                .then(ids => {
-                    const [id] = ids;
-                    return findById(id);
-                });
+    try {
+        return await db('users')
+                    .insesrt(userCreds, 'id')
+                    .then(ids => {
+                        const [id] = ids;
+                        return findById(id);
+                    });
+    }
+    catch(err) {
+        console.log("add: ERR",err);
+        console.error(err);
+    }
 };
