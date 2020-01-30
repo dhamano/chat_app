@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const secret = process.env.JWT_SECRET || "Work! Work! Work!";
 const mw = require('../middleware/middleware');
+const { userValidationRules, validate } = require('../middleware/validator');
 
 const Users = require('../models/user-model');
 
@@ -20,13 +21,12 @@ router.post('/register', mw.checkUserInfo, async (req, res) => {
     }
 });
 
-router.post('/login', mw.checkUserInfo, async (req,res) => {
+router.post('/login', mw.checkUserInfo, userValidationRules(), validate, async (req,res) => {
     let { username, password } = req.body;
 
     try {
         await Users.findByFilter({ username })
                     .then( user => {
-                        console.log('GOT USER BACK', user);
                         if(user && bcrypt.compareSync(password, user.password)) {
                             const token = getToken(user);
                             res.status(200).json({
