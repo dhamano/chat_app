@@ -8,12 +8,12 @@ const userValidationRules = () => {
             .isString()
             .trim()
             .not().isEmpty()
-            .isLength({ min: 2 }),
+            .isLength({ min: 2, max: 20 }),
         body('password')
             .isString()
             .trim()
             .not().isEmpty()
-            .isLength({ min: 8 })
+            .isLength({ min: 8, max: 25 })
     ]
 }
 

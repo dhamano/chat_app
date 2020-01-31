@@ -16,7 +16,6 @@ const Login = props => {
 
     async function handleSubmitLogin (e) {
         e.preventDefault();
-        console.log('LOGIN SUBMIT', e.target.value);
         await login({ username: props.loginRegVals.username, password })
                             .then(res => console.log('LOGIN RESPONSE',res))
     }
