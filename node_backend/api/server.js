@@ -13,14 +13,14 @@ process.title = 'node-chat-app';
 server.set('trust proxy', 1);
 
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100
+    windowMs: 15 * 60 * 1000, // x minutes
+    max: 50                   // max requests
 });
 
 const speedLimiter = slowDown({
-    windowMs: 15 * 60 * 1000,   // x minutes
-    delayAfter: 100,            // x requests per windowMs
-    delayMs: 500                // begin adding x ms per request above 100s
+    windowMs: 15 * 60 * 1000,  // x minutes
+    delayAfter: 25,            // x requests per windowMs
+    delayMs: 500               // begin adding x ms per request above 100s
 });
 
 server.use(limiter);
