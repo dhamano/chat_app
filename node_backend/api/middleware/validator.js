@@ -2,8 +2,8 @@ const { body, validationResult, sanitizeBody } = require('express-validator');
 
 const userValidationRules = () => {
     return [
-        sanitizeBody('username'),
-        sanitizeBody('password'),
+        // sanitizeBody('username'),
+        // sanitizeBody('password'),
         body('username')
             .isString()
             .trim()
@@ -13,7 +13,7 @@ const userValidationRules = () => {
             .isString()
             .trim()
             .not().isEmpty()
-            .isLength({ min: 8, max: 25 })
+            .isLength({ min: 3, max: 25 })
     ]
 }
 
@@ -23,6 +23,7 @@ const validate = (req, res, next) => {
 
     const theErrs = [];
     errs.array().map(err => theErrs.push({ [err.param] : err.msg }));
+    console.log("theErrs",theErrs)
 
     return res.status(422).json({
         errors: theErrs
