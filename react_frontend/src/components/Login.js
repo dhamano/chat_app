@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { login, register } from '../services';
+import { setLocalStorage, getLocalStorage } from '../utilities';
 
 const Login = props => {
     const [password, setPassword] = useState(false);
@@ -17,7 +18,10 @@ const Login = props => {
     async function handleSubmitLogin (e) {
         e.preventDefault();
         await login({ username: props.loginRegVals.username, password })
-                            .then(res => console.log('LOGIN RESPONSE',res))
+                            .then(res => {
+                                setLocalStorage("token", res.data.token);
+                                setLocalStorage("username", res.data.username);
+                            })
     }
 
     async function handleSubmitRegister (e) {
