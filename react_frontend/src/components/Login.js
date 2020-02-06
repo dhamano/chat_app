@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import { login, register } from '../services';
 import { setLocalStorage, getLocalStorage } from '../utilities';
 
@@ -21,6 +20,7 @@ const Login = props => {
                             .then(res => {
                                 setLocalStorage("token", res.data.token);
                                 setLocalStorage("username", res.data.username);
+                                props.history.push('/')
                             })
     }
 
@@ -33,9 +33,6 @@ const Login = props => {
         await register({ username: props.loginRegVals.username, password })
                             .then(res => console.log(res))
     }
-
-    // console.log('loginRegVals',props.loginRegVals);
-    // console.log('prop', props);
 
     return (
         <div className="login-reg-page">
@@ -83,17 +80,5 @@ const Login = props => {
         </div>
     )
 };
-
-// Login.propTypes = {
-//     loginRegVals : PropTypes.objectOf( 
-//         PropTypes.shape({
-//             username        : PropTypes.string,
-//             setUsername     : PropTypes.func,
-//             loginOrReg      : PropTypes.string,
-//             setLoginOrReg   : PropTypes.func,
-//             onClickHandler  : PropTypes.func
-//         })
-//         )
-// };
 
 export default Login;
