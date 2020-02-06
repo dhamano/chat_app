@@ -56,7 +56,7 @@ function App() {
         setUserMessage
     }
 
-    // console.log("TEMP_REMOVE_WHEN_USED",TEMP_REMOVE_WHEN_USED);
+    console.log("TEMP_REMOVE_WHEN_USED",TEMP_REMOVE_WHEN_USED);
     
     let loginRegVals = {
         setUsername,
