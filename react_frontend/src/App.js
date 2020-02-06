@@ -38,11 +38,11 @@ function App() {
         );
     };
 
-    // const connection = new WebSocket('ws://127.0.0.1:8000');
+    const connection = new WebSocket('ws://127.0.0.1:8000');
 
-    // connection.onopen = function() {
+    connection.onopen = function() {
         
-    // }
+    }
 
     function onClickHandler(e) {
         if(e.target.innerText === "Login") setLoginOrReg('Login');
