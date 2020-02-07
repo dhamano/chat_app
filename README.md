@@ -2,7 +2,8 @@
 
 Project to become more familiar with WebSockets.
 
- - [ ] Login
+ - [x] Login
+    - [ ] setup sessions to work with JWT
  - [ ] Registration
  - [ ] Messaging input and display
  - [ ] Account Updating
