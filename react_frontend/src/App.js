@@ -41,12 +41,28 @@ function App() {
     const connection = new WebSocket('ws://127.0.0.1:8000');
 
     connection.onopen = function() {
+        InputDeviceInfo.removeAttr('disabled');
+        status.text('Choose name:');
+    }
+
+    connection.onmessage = function(message) {
+        try {
+            let json = JSON.parse(message.data);
+        } catch (e) {
+            console.log('This doesn\'t look like JSON: ', message.data);
+            return;
+        }
+
         
     }
 
     function onClickHandler(e) {
         if(e.target.innerText === "Login") setLoginOrReg('Login');
         if(e.target.innerText === "Register") setLoginOrReg('Register');
+    }
+
+    connection.onerror = function(err) {
+        msContentScript.html($('<p>', { text: 'Sorry, but there\'s some problem with your connection or the server is down.' }))
     }
 
     let TEMP_REMOVE_WHEN_USED = {
