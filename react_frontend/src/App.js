@@ -85,9 +85,9 @@ function App() {
 
     return (
         <div className="App">
-           <Route exact path="/" render={ props => localStorage.getItem("token") ? <Redirect to="/home" msgVals={msgVals} /> : <Login {...props} loginRegVals={loginRegVals}  /> } />
+           <Route exact path="/" render={ props => localStorage.getItem("token") ? <Redirect to="/home" /> : <Login {...props} loginRegVals={loginRegVals}  /> } />
            <Route path="/register" render={ props => <Login {...props} loginRegVals={loginRegVals}  /> } />
-           <PrivateRoute path="/home" component={Messaging} />
+           <PrivateRoute path="/home" component={Messaging}  {...msgVals} />
         </div>
     );
 }
