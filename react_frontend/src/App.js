@@ -40,6 +40,7 @@ function App() {
     };
 
     const connection = new WebSocket('ws://127.0.0.1:8000');
+    console.log("connection",connection);
 
     connection.onopen = function() {
         setIsDisabled(false);
@@ -85,9 +86,9 @@ function App() {
 
     return (
         <div className="App">
-           <Route exact path="/" render={ props => localStorage.getItem("token") ? <Redirect to="/home" msgVals={msgVals} /> : <Login {...props} loginRegVals={loginRegVals}  /> } />
+           <Route exact path="/" render={ props => localStorage.getItem("token") ? <Redirect to="/home" /> : <Login {...props} loginRegVals={loginRegVals}  /> } />
            <Route path="/register" render={ props => <Login {...props} loginRegVals={loginRegVals}  /> } />
-           <PrivateRoute path="/home" component={Messaging} />
+           <PrivateRoute path="/home" component={Messaging}  {...msgVals} />
         </div>
     );
 }
