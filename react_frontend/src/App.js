@@ -40,6 +40,7 @@ function App() {
     };
 
     const connection = new WebSocket('ws://127.0.0.1:8000');
+    console.log("connection",connection);
 
     connection.onopen = function() {
         setIsDisabled(false);
