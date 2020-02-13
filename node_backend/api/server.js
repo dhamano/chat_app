@@ -5,6 +5,7 @@ const slowDown = require('express-slow-down');
 const rateLimit = require('express-rate-limit');
 
 const userRouter = require('./routes/auth');
+const wSS = require('../webSocket/wsserver');
 
 const server = express();
 
@@ -31,6 +32,8 @@ server.use(express.json());
 server.use(cors());
 
 server.use('/auth', userRouter);
+
+server.get('/wss', wSS);
 
 server.get('/', (req, res) => res.status(200).send('<h2>5x5</h2>'))
 

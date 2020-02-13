@@ -39,12 +39,11 @@ function App() {
         );
     };
 
-    const connection = new WebSocket('ws://127.0.0.1:8000');
+    const connection = new WebSocket('ws://127.0.0.1:8000/wSS');
     console.log("connection",connection);
 
     connection.onopen = function() {
         setIsDisabled(false);
-        // status.text('Choose name:');
     }
 
     connection.onmessage = function(message) {
