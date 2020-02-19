@@ -13,7 +13,7 @@ const userValidationRules = () => {
             .isString()
             .trim()
             .not().isEmpty()
-            .isLength({ min: 6, max: 25 }) // TODO: change min to 8 when done testing
+            .isLength({ min: 8, max: 25 }) // TODO: change min to 8 when done testing
     ]
 }
 
