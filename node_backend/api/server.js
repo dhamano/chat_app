@@ -1,17 +1,24 @@
 const express = require('express');
+const http = require('http');
+const WebSocket = require('ws');
 const helmet = require('helmet');
 const cors = require('cors');
 const slowDown = require('express-slow-down');
 const rateLimit = require('express-rate-limit');
 
 const userRouter = require('./routes/auth');
-const wSS = require('../webSocket/wsserver');
 
-const server = express();
+const app = express();
+
+// initialize http server
+const server = http.createServer(app);
+
+// initialize WebSocket server
+const wss = new WebSocket.Server({ server });
 
 process.title = 'node-chat-app';
 
-server.set('trust proxy', 1);
+app.set('trust proxy', 1);
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // x minutes
@@ -24,19 +31,28 @@ const speedLimiter = slowDown({
     delayMs: 500               // begin adding x ms per request above 100s
 });
 
-server.use(limiter);
-server.use(speedLimiter);
+app.use(limiter);
+app.use(speedLimiter);
 
-server.use(helmet());
-server.use(express.json());
-server.use(cors());
+app.use(helmet());
+app.use(express.json());
+app.use(cors());
 
-server.use('/auth', userRouter);
+app.use('/auth', userRouter);
+// server.get('/', (req, res) => res.status(200).send('<h2>5x5</h2>'))
 
-server.get('/wss', wSS);
+wss.on('connection', ( ws ) => {
+    console.log('connection…');
 
-server.get('/', (req, res) => res.status(200).send('<h2>5x5</h2>'))
+    // on connect message
+    ws.on('message', ( message ) => {
+        console.log('received: %s', message);
+        connectedUsers.push(message);
+    });
+
+    ws.send('message from server at: ' + new Date());
+});
 
 
 
-module.exports = server;
+module.exports = app;

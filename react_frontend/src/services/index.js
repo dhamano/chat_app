@@ -1,5 +1,5 @@
-import axios from 'axios';
-import axiosWithAuth from '../utilities/axiosWIthAuth';
+ import axios from 'axios';
+// import axiosWithAuth from '../utilities/axiosWIthAuth';
 
 const host = process.env.BASE_HOST || 'http://localhost:8000';
 

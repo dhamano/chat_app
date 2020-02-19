@@ -49,6 +49,7 @@ function App() {
     connection.onmessage = function(message) {
         try {
             let json = JSON.parse(message.data);
+            console.log('json', json);
         } catch (e) {
             console.log('This doesn\'t look like JSON: ', message.data);
             return;
