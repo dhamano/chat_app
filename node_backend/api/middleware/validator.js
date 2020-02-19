@@ -1,4 +1,4 @@
-const { body, validationResult, sanitizeBody } = require('express-validator');
+const { body, validationResult } = require('express-validator');
 
 const userValidationRules = () => {
     return [
@@ -13,7 +13,7 @@ const userValidationRules = () => {
             .isString()
             .trim()
             .not().isEmpty()
-            .isLength({ min: 3, max: 25 }) // TODO: change min to 8 when done testing
+            .isLength({ min: 6, max: 25 }) // TODO: change min to 8 when done testing
     ]
 }
 
