@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { login, register } from '../services';
-import { setLocalStorage, getLocalStorage } from '../utilities';
+import { setLocalStorage } from '../utilities';
 
 const Login = props => {
     const [password, setPassword] = useState(false);

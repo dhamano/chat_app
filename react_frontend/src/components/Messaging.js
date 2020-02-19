@@ -1,7 +1,7 @@
-import React, { useEffect, userState } from 'react';
+import React from 'react';
 
 const Messaging = props => {
-    console.log('PROPS',props)
+    // console.log('PROPS',props)
     return (
         <div className="chat-wrapper">
             <div id="content"></div>
