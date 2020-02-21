@@ -9,6 +9,7 @@ const rateLimit = require('express-rate-limit');
 const userRouter = require('./routes/auth');
 
 const app = express();
+const router = express.Router();
 
 // initialize http server
 const server = http.createServer(app);
@@ -39,6 +40,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/auth', userRouter);
+app.use('/', router);
 // server.get('/', (req, res) => res.status(200).send('<h2>5x5</h2>'))
 
 wss.on('connection', ( ws ) => {

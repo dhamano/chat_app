@@ -14,7 +14,11 @@ router.post('/register', mw.checkUserInfo, async (req, res) => {
         req.user.password = getHash(req.user.password);
 
         const user = await Users.add(req.user);
-        res.status(201).json({ message: 'User created', user });
+        console.log('user is now: ',user);
+        user === undefined ?
+            res.status(500).json({ error: 'There was a problem adding the user to the server.' })
+        :
+            res.status(201).json({ message: 'User created', user });
     }
     catch(err) {
         res.status(500).json({ error: 'There was a problem adding the user to the server.' });

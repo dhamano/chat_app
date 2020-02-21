@@ -31,41 +31,45 @@ function App() {
         };
     }, []);
 
-    if (!isCompatible) {
-        return (
-            <div className="not-compatible">
-                <h2>Your browser does not support the WebSocket protocol.<br />Please install a browser that does.</h2>
-            </div>
-        );
-    };
+    
+    if ( localStorage.getItem('token') && localStorage.getItem('token') !== "undefined" ) {
+        if (!isCompatible) {
+            return (
+                <div className="not-compatible">
+                    <h2>Your browser does not support the WebSocket protocol.<br />Please install a browser that does.</h2>
+                </div>
+            );
+        };
 
-    const connection = new WebSocket('ws://127.0.0.1:8000/wSS');
-    console.log("connection",connection);
+        const connection = new WebSocket('ws://127.0.0.1:8000/');
+        console.log("connection",connection);
 
-    connection.onopen = function() {
-        setIsDisabled(false);
-    }
-
-    connection.onmessage = function(message) {
-        try {
-            let json = JSON.parse(message.data);
-            console.log('json', json);
-        } catch (e) {
-            console.log('This doesn\'t look like JSON: ', message.data);
-            return;
+        connection.onopen = function() {
+            setIsDisabled(false);
         }
 
-        
+        connection.onmessage = function(message) {
+            try {
+                let json = JSON.parse(message.data);
+                console.log('json', json);
+            } catch (e) {
+                console.log('This doesn\'t look like JSON: ', message.data);
+                return;
+            }
+        }
+
+        connection.onerror = function(err) {
+            setUserMessage('Sorry, but there\'s some problem with your connection or the server is down.');
+        }
     }
+
+
 
     function onClickHandler(e) {
         if(e.target.innerText === "Login") setLoginOrReg('Login');
         if(e.target.innerText === "Register") setLoginOrReg('Register');
     }
 
-    connection.onerror = function(err) {
-        setUserMessage('Sorry, but there\'s some problem with your connection or the server is down.');
-    }
 
     let msgVals = {
         isDisabled,
@@ -86,7 +90,7 @@ function App() {
 
     return (
         <div className="App">
-           <Route exact path="/" render={ props => localStorage.getItem("token") ? <Redirect to="/home" /> : <Login {...props} loginRegVals={loginRegVals}  /> } />
+           <Route exact path="/" render={ props => localStorage.getItem("token") && localStorage.getItem("token") !== "undefined" ? <Redirect to="/home" /> : <Login {...props} loginRegVals={loginRegVals}  /> } />
            <Route path="/register" render={ props => <Login {...props} loginRegVals={loginRegVals}  /> } />
            <PrivateRoute path="/home" component={Messaging}  {...msgVals} />
         </div>
