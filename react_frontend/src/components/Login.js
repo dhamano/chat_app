@@ -16,8 +16,10 @@ const Login = props => {
 
     async function handleSubmitLogin (e) {
         e.preventDefault();
+        console.log('login', props.loginRegVals.username, password);
         await login({ username: props.loginRegVals.username, password })
                             .then(res => {
+                                console.log('login res', res);
                                 setLocalStorage("token", res.data.token);
                                 setLocalStorage("username", res.data.username);
                                 props.history.push('/')
@@ -31,7 +33,16 @@ const Login = props => {
             return;
         }
         await register({ username: props.loginRegVals.username, password })
-                            .then(res => console.log(res))
+                            .then(res => {
+                                console.log('register', res);
+                                if ( res.status === 201 ) {
+                                    setLocalStorage("token", res.data.token);
+                                    setLocalStorage("username", res.data.username);
+                                    props.history.push('/')
+                                } else {
+                                    console.log('ERROR');
+                                }
+                            })
     }
 
     return (
