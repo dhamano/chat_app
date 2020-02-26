@@ -7,8 +7,10 @@ const Login = props => {
     const [password, setPassword] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState(false);
     const [passwordErr, setPasswordErr] = useState(false);
+    const [loginError, setLoginError] = useState(false);
 
     function handleOnChange (e) {
+        setLoginError(false);
         if(e.target.name === 'username') props.loginRegVals.setUsername(e.target.value);
         if(e.target.name === 'password') setPassword(e.target.value);
         if(e.target.name === 'confirm-password') setConfirmPassword(e.target.value);
@@ -16,13 +18,17 @@ const Login = props => {
 
     async function handleSubmitLogin (e) {
         e.preventDefault();
-        console.log('login', props.loginRegVals.username, password);
+        // console.log('login', props.loginRegVals.username, password);
+        setLoginError(false);
         await login({ username: props.loginRegVals.username, password })
                             .then(res => {
-                                console.log('login res', res);
-                                setLocalStorage("token", res.data.token);
-                                setLocalStorage("username", res.data.username);
-                                props.history.push('/')
+                                if(res.status === 200) {
+                                    setLocalStorage("token", res.data.token);
+                                    setLocalStorage("username", res.data.username);
+                                    props.history.push('/')
+                                } else {
+                                    setLoginError(true);
+                                }
                             })
     }
 
@@ -56,6 +62,9 @@ const Login = props => {
                     { props.loginRegVals.loginOrReg === "Login" ? (
                     <div className="login">
                         <form onSubmit={handleSubmitLogin}>
+                            {
+                                loginError && <div className="error">Your username or password was incorrect.</div>
+                            } 
                             <div>
                                 <input id="username" onChange={handleOnChange} value={!props.loginRegVals.username ? '' : props.loginRegVals.username} name="username" type="text" placeholder="username" autoComplete="username" required />
                                 <label htmlFor="username">username</label>

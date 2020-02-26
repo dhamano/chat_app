@@ -32,9 +32,7 @@ export const login = async (userCred) => {
                             return res;
                         })
                         .catch( err => {
-                            console.log("ERROR",err);
-                            console.error(err);
-                            return err;
+                            return err.response;
                         })
 
 }
