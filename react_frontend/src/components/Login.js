@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import zxcvbn from 'zxcvbn';
 
 import { NavLink } from 'react-router-dom';
@@ -11,22 +11,50 @@ const Login = props => {
     const [passwordErr, setPasswordErr] = useState(false);
     const [loginError, setLoginError] = useState(false);
     const [passStr, setPassStr] = useState(0);
-    const [passStrConfirm, setPassStrConfirm] = useState(0);
+    const [passStrMsg, setPassStrMsg] = useState({
+        show: false,
+        class: '',
+        message: ''
+    });
+    const [showPassMsg, setShowPassMsg] = useState(false);
 
     const minPassStr = process.env.PASS_STR || 3;
     const minPassLen = process.env.PASS_LEN || 8;
 
+    useEffect( () => {
+        password === confirmPassword ? setPasswordErr(false) : setPasswordErr(true);
+    }, [password, confirmPassword]);
+
+    useEffect( () => {
+        console.log('pass str');
+        switch (passStr) {
+            case 1:
+                setPassStrMsg({ class: 'very-weak', message: 'very weak' });
+                break;
+            case 2:
+                setPassStrMsg({ class: 'weak', message: 'weak' });
+                break;
+            case 3:
+                setPassStrMsg({ class: 'okay', message: 'okay' });
+                break;
+            case 4:
+                setPassStrMsg({ class: 'good', message: 'good' });
+                break;
+            default:
+                setPassStrMsg({ class: 'bad', message: 'very bad' });
+        };
+    }, [passStr]);
+
     function handleOnChange(e) {
         setLoginError(false);
+        setPasswordErr(false);
         if(e.target.name === 'username') props.loginRegVals.setUsername(e.target.value);
         if(e.target.name === 'password') {
+            setShowPassMsg(true);
             setPassword(e.target.value);
             setPassStr(zxcvbn(e.target.value).score);
         }
-        if(e.target.name === 'confirm-password'){
-            setConfirmPassword(e.target.value);
-            setPassStrConfirm(zxcvbn(e.target.value).score);
-        }
+        if(e.target.name === 'confirm-password')  setConfirmPassword(e.target.value);
     };
 
     async function handleSubmitLogin(e) {
@@ -94,12 +122,12 @@ const Login = props => {
                                 <label htmlFor="reg-username">username</label>
                             </div>
                             <div>
-                                <input id="reg-password" className={ passwordErr ? 'error' : '' } onChange={handleOnChange} value={!password ? '' : password} name="password" type="password" placeholder="password" autoComplete="new-password" required />
-                                <label htmlFor="reg-password">password <span className="str-indicator">{passStr}</span></label>
+                                <input id="reg-password" className={ passwordErr ? 'pass-error' : '' } onChange={handleOnChange} value={!password ? '' : password} name="password" type="password" placeholder="password" autoComplete="new-password" required />
+                                <label htmlFor="reg-password">password <span className={ showPassMsg ? `str-indicator ${ passStrMsg.class }` : 'hide' }>{passStrMsg.message}</span></label>
                             </div>
                             <div>
-                                <input id="confirmPassword" className={ passwordErr ? 'error' : '' } onChange={handleOnChange} value={!confirmPassword ? '' : confirmPassword} name="confirm-password" type="password" placeholder="confirm password" autoComplete="new-password" required />
-                                <label htmlFor="confirmPassword">confirm password <span className="str-indicator">{passStrConfirm}</span></label>
+                                <input id="confirmPassword" className={ passwordErr ? 'pass-error' : '' } onChange={handleOnChange} value={!confirmPassword ? '' : confirmPassword} name="confirm-password" type="password" placeholder="confirm password" autoComplete="new-password" required />
+                                <label htmlFor="confirmPassword">confirm password <span className={`no-match${ passwordErr ? ' show-confirm-error' : '' }`}>no match</span></label>
                             </div>
                             <button type="submit">Register</button>
                         </form>

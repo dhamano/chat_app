@@ -89,6 +89,7 @@
                     &:not(:placeholder-shown) + label {
                         bottom: -17px;
                     }
+
                 }
 
                 .error {
@@ -127,6 +128,39 @@
                     bottom: 0;
                     left: 5px;
                     transition: bottom 0.25s ease-in-out;
+
+                    .no-match {
+                        display: none;
+
+                        &.show-confirm-error {
+                            display: inline-block;
+                        }
+                    }
+
+                    .str-indicator {
+                        font-size: 0.75rem;
+                        display: inline-block;
+
+                        &.bad {
+                            color: rgb(190, 0, 0);
+                        }
+
+                        &.very-weak {
+                            color: rgb(228, 110, 0);
+                        }
+
+                        &.weak {
+                            color: rgb(201, 197, 0);
+                        }
+
+                        &.okay{
+                            color : rgb(102, 192, 0);
+                        }
+
+                        &.good {
+                            color: rgb(0, 168, 14);
+                        }
+                    }
                 }
 
                 input:focus {
