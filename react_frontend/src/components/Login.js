@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import zxcvbn from 'zxcvbn';
+
 import { NavLink } from 'react-router-dom';
 import { login, register } from '../services';
 import { setLocalStorage } from '../utilities';
@@ -7,31 +9,73 @@ const Login = props => {
     const [password, setPassword] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState(false);
     const [passwordErr, setPasswordErr] = useState(false);
+    const [loginError, setLoginError] = useState(false);
+    const [passStr, setPassStr] = useState(0);
+    const [passStrMsg, setPassStrMsg] = useState({
+        show: false,
+        class: '',
+        message: ''
+    });
+    const [showPassMsg, setShowPassMsg] = useState(false);
 
-    function handleOnChange (e) {
+    const minPassStr = process.env.PASS_STR || 3;
+    const minPassLen = process.env.PASS_LEN || 8;
+
+    useEffect( () => {
+        password === confirmPassword ? setPasswordErr(false) : setPasswordErr(true);
+    }, [password, confirmPassword]);
+
+    useEffect( () => {
+        console.log('pass str');
+        switch (passStr) {
+            case 1:
+                setPassStrMsg({ class: 'very-weak', message: 'very weak' });
+                break;
+            case 2:
+                setPassStrMsg({ class: 'weak', message: 'weak' });
+                break;
+            case 3:
+                setPassStrMsg({ class: 'okay', message: 'okay' });
+                break;
+            case 4:
+                setPassStrMsg({ class: 'good', message: 'good' });
+                break;
+            default:
+                setPassStrMsg({ class: 'bad', message: 'very bad' });
+        };
+    }, [passStr]);
+
+    function handleOnChange(e) {
+        setLoginError(false);
+        setPasswordErr(false);
         if(e.target.name === 'username') props.loginRegVals.setUsername(e.target.value);
-        if(e.target.name === 'password') setPassword(e.target.value);
-        if(e.target.name === 'confirm-password') setConfirmPassword(e.target.value);
+        if(e.target.name === 'password') {
+            setShowPassMsg(true);
+            setPassword(e.target.value);
+            setPassStr(zxcvbn(e.target.value).score);
+        }
+        if(e.target.name === 'confirm-password')  setConfirmPassword(e.target.value);
     };
 
-    async function handleSubmitLogin (e) {
+    async function handleSubmitLogin(e) {
         e.preventDefault();
-        console.log('login', props.loginRegVals.username, password);
+        // console.log('login', props.loginRegVals.username, password);
+        setLoginError(false);
         await login({ username: props.loginRegVals.username, password })
                             .then(res => {
-                                console.log('login res', res);
-                                setLocalStorage("token", res.data.token);
-                                setLocalStorage("username", res.data.username);
-                                props.history.push('/')
+                                if(res.status === 200) {
+                                    setLocalStorage("token", res.data.token);
+                                    setLocalStorage("username", res.data.username);
+                                    props.history.push('/')
+                                } else {
+                                    setLoginError(true);
+                                }
                             })
     }
 
     async function handleSubmitRegister (e) {
         e.preventDefault();
-        if( password !== confirmPassword) {
-            setPasswordErr(true);
-            return;
-        }
+
         await register({ username: props.loginRegVals.username, password })
                             .then(res => {
                                 console.log('register', res);
@@ -56,13 +100,16 @@ const Login = props => {
                     { props.loginRegVals.loginOrReg === "Login" ? (
                     <div className="login">
                         <form onSubmit={handleSubmitLogin}>
+                            {
+                                loginError && <div className="error">Your username or password was incorrect.</div>
+                            } 
                             <div>
                                 <input id="username" onChange={handleOnChange} value={!props.loginRegVals.username ? '' : props.loginRegVals.username} name="username" type="text" placeholder="username" autoComplete="username" required />
                                 <label htmlFor="username">username</label>
                             </div>
                             <div>
                                 <input id="password" onChange={handleOnChange} value={!password ? '' : password} name="password" type="password" placeholder="password" autoComplete="current-password" required />
-                                <label htmlFor="password">password</label>
+                        <label htmlFor="password">password</label>
                             </div>
                             <button type="submit">Login</button>
                         </form>
@@ -75,12 +122,12 @@ const Login = props => {
                                 <label htmlFor="reg-username">username</label>
                             </div>
                             <div>
-                                <input id="reg-password" className={ passwordErr ? 'error' : '' } onChange={handleOnChange} value={!password ? '' : password} name="password" type="password" placeholder="password" autoComplete="new-password" required />
-                                <label htmlFor="reg-password">password</label>
+                                <input id="reg-password" className={ passwordErr ? 'pass-error' : '' } onChange={handleOnChange} value={!password ? '' : password} name="password" type="password" placeholder="password" autoComplete="new-password" required />
+                                <label htmlFor="reg-password">password <span className={ showPassMsg ? `str-indicator ${ passStrMsg.class }` : 'hide' }>{passStrMsg.message}</span></label>
                             </div>
                             <div>
-                                <input id="confirmPassword" className={ passwordErr ? 'error' : '' } onChange={handleOnChange} value={!confirmPassword ? '' : confirmPassword} name="confirm-password" type="password" placeholder="confirm password" autoComplete="new-password" required />
-                                <label htmlFor="confirmPassword">confirm password</label>
+                                <input id="confirmPassword" className={ passwordErr ? 'pass-error' : '' } onChange={handleOnChange} value={!confirmPassword ? '' : confirmPassword} name="confirm-password" type="password" placeholder="confirm password" autoComplete="new-password" required />
+                                <label htmlFor="confirmPassword">confirm password <span className={`no-match${ passwordErr ? ' show-confirm-error' : '' }`}>no match</span></label>
                             </div>
                             <button type="submit">Register</button>
                         </form>

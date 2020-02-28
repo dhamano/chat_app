@@ -34,7 +34,7 @@ async function findByFilter(filter) {
 async function add(userCreds) {
     try {
         return await db('users')
-                    .insesrt(userCreds, 'id')
+                    .insert(userCreds, 'id')
                     .then(ids => {
                         const [id] = ids;
                         return findById(id);

@@ -60,8 +60,9 @@
             }
 
             form {
-                padding: 20px;
+                padding: 40px;
                 text-align: center;
+                position: relative;
 
                 div {
                     margin-bottom: 20px;
@@ -84,6 +85,40 @@
                         opacity: 1;
                         transition: color 0.25s ease-in-out;
                     }
+
+                    &:not(:placeholder-shown) + label {
+                        bottom: -17px;
+                    }
+
+                }
+
+                .error {
+                    margin: 0 40px;
+                    padding: 6px;
+                    background: #f99;
+                    color: #fff;
+                    font-style: italic;
+                    font-size: 0.875rem;
+                    border-radius: 6px;
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    animation: dropin 0.25s 1 forwards;
+                }
+
+                @keyframes dropin {
+                    from {
+                        opacity: 0;
+                        top: 0;
+                    }
+                    95% {
+                        top: 8px;
+                        opacity: .5
+                    }
+                    to {
+                        opacity: 1;
+                        top: 5px;
+                    }
                 }
 
                 label {
@@ -93,6 +128,39 @@
                     bottom: 0;
                     left: 5px;
                     transition: bottom 0.25s ease-in-out;
+
+                    .no-match {
+                        display: none;
+
+                        &.show-confirm-error {
+                            display: inline-block;
+                        }
+                    }
+
+                    .str-indicator {
+                        font-size: 0.75rem;
+                        display: inline-block;
+
+                        &.bad {
+                            color: rgb(190, 0, 0);
+                        }
+
+                        &.very-weak {
+                            color: rgb(228, 110, 0);
+                        }
+
+                        &.weak {
+                            color: rgb(201, 197, 0);
+                        }
+
+                        &.okay{
+                            color : rgb(102, 192, 0);
+                        }
+
+                        &.good {
+                            color: rgb(0, 168, 14);
+                        }
+                    }
                 }
 
                 input:focus {
@@ -101,7 +169,7 @@
                     }
 
                     & + label {
-                        bottom: -20px;
+                        bottom: -17px;
                     }
                 }
 
@@ -114,6 +182,7 @@
                     color: #fff;
                     font: bold 1.125rem/1.25em $default-stack;
                     border: none;
+                    cursor: pointer;
                     -moz-appearance: none;
                     -webkit-appearance: none;
                     appearance: none;
