@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import zxcvbn from 'zxcvbn';
+
 import { NavLink } from 'react-router-dom';
 import { login, register } from '../services';
 import { setLocalStorage } from '../utilities';
@@ -8,15 +10,26 @@ const Login = props => {
     const [confirmPassword, setConfirmPassword] = useState(false);
     const [passwordErr, setPasswordErr] = useState(false);
     const [loginError, setLoginError] = useState(false);
+    const [passStr, setPassStr] = useState(0);
+    const [passStrConfirm, setPassStrConfirm] = useState(0);
 
-    function handleOnChange (e) {
+    const minPassStr = process.env.PASS_STR || 3;
+    const minPassLen = process.env.PASS_LEN || 8;
+
+    function handleOnChange(e) {
         setLoginError(false);
         if(e.target.name === 'username') props.loginRegVals.setUsername(e.target.value);
-        if(e.target.name === 'password') setPassword(e.target.value);
-        if(e.target.name === 'confirm-password') setConfirmPassword(e.target.value);
+        if(e.target.name === 'password') {
+            setPassword(e.target.value);
+            setPassStr(zxcvbn(e.target.value).score);
+        }
+        if(e.target.name === 'confirm-password'){
+            setConfirmPassword(e.target.value);
+            setPassStrConfirm(zxcvbn(e.target.value).score);
+        }
     };
 
-    async function handleSubmitLogin (e) {
+    async function handleSubmitLogin(e) {
         e.preventDefault();
         // console.log('login', props.loginRegVals.username, password);
         setLoginError(false);
@@ -34,10 +47,7 @@ const Login = props => {
 
     async function handleSubmitRegister (e) {
         e.preventDefault();
-        if( password !== confirmPassword) {
-            setPasswordErr(true);
-            return;
-        }
+
         await register({ username: props.loginRegVals.username, password })
                             .then(res => {
                                 console.log('register', res);
@@ -71,7 +81,7 @@ const Login = props => {
                             </div>
                             <div>
                                 <input id="password" onChange={handleOnChange} value={!password ? '' : password} name="password" type="password" placeholder="password" autoComplete="current-password" required />
-                                <label htmlFor="password">password</label>
+                        <label htmlFor="password">password</label>
                             </div>
                             <button type="submit">Login</button>
                         </form>
@@ -85,11 +95,11 @@ const Login = props => {
                             </div>
                             <div>
                                 <input id="reg-password" className={ passwordErr ? 'error' : '' } onChange={handleOnChange} value={!password ? '' : password} name="password" type="password" placeholder="password" autoComplete="new-password" required />
-                                <label htmlFor="reg-password">password</label>
+                                <label htmlFor="reg-password">password <span className="str-indicator">{passStr}</span></label>
                             </div>
                             <div>
                                 <input id="confirmPassword" className={ passwordErr ? 'error' : '' } onChange={handleOnChange} value={!confirmPassword ? '' : confirmPassword} name="confirm-password" type="password" placeholder="confirm password" autoComplete="new-password" required />
-                                <label htmlFor="confirmPassword">confirm password</label>
+                                <label htmlFor="confirmPassword">confirm password <span className="str-indicator">{passStrConfirm}</span></label>
                             </div>
                             <button type="submit">Register</button>
                         </form>

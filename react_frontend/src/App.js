@@ -5,7 +5,7 @@ import PrivateRoute from './utilities/PrivateRoute';
 import Login from './components/Login';
 import Messaging from './components/Messaging';
 
-function App() {
+const App = (props) => {
 
     const [isCompatible, setIsCompatible] = useState(true);
     const [loginOrReg, setLoginOrReg] = useState('Login');
@@ -29,6 +29,14 @@ function App() {
         return function cleanup() {
             checkIfCompaitbleWithWebSocket();
         };
+    }, []);
+
+    useEffect( () => {
+        if( props.location.pathname === "/register") {
+            setLoginOrReg('Register');
+            props.history.push('/register');
+        }
+        console.log('USEEFFECT', props)
     }, []);
 
     
@@ -63,8 +71,6 @@ function App() {
         }
     }
 
-
-
     function onClickHandler(e) {
         if(e.target.innerText === "Login") setLoginOrReg('Login');
         if(e.target.innerText === "Register") setLoginOrReg('Register');
@@ -86,7 +92,7 @@ function App() {
         loginOrReg,
         setLoginOrReg,
         onClickHandler
-    } 
+    }
 
     return (
         <div className="App">
