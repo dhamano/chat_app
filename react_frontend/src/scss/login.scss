@@ -67,6 +67,18 @@
                 div {
                     margin-bottom: 20px;
                     position: relative;
+
+                    .toggle-show-pass {
+                        $size: auto;
+                        width: $size;
+                        height: $size;
+                        padding: 9px;
+                        background-color: transparent;
+                        color: #333;
+                        position: absolute;
+                        z-index: 50;
+                        right: 0;
+                    }
                 }
 
                 input {
@@ -150,7 +162,7 @@
                         }
 
                         &.weak {
-                            color: rgb(201, 197, 0);
+                            color: rgb(139, 138, 32);
                         }
 
                         &.okay{
