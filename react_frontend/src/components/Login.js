@@ -9,7 +9,6 @@ import { setLocalStorage } from '../utilities';
 const Login = props => {
     const [password, setPassword]               = useState(false);
     const [passwordErr, setPasswordErr]         = useState(false);
-    const [loginError, setLoginError]           = useState(false);
     const [showPassword, setShowPassword]       = useState(false);
     const [passStr, setPassStr]                 = useState(0);
     const [passStrMsg, setPassStrMsg]           = useState({
@@ -17,27 +16,26 @@ const Login = props => {
                                                       class: '',
                                                       message: ''
                                                   });
-    const [showPassMsg, setShowPassMsg]         = useState(false);
+    const [showErrMsg, setShowErrMsg]           = useState({
+                                                      show: false,
+                                                      message: ''
+                                                  });
 
     const minPassStr = process.env.PASS_STR || 3;
     const minPassLen = process.env.PASS_LEN || 8;
 
     useEffect( () => {
         switch (passStr) {
-            case 1:
-                setPassStrMsg({ class: 'very-weak', message: 'very weak' });
-                break;
-            case 2:
-                setPassStrMsg({ class: 'weak', message: 'weak' });
+            case 4:
+                setPassStrMsg({ class: 'good', message: 'good' });
                 break;
             case 3:
                 setPassStrMsg({ class: 'okay', message: 'okay' });
                 break;
-            case 4:
-                setPassStrMsg({ class: 'good', message: 'good' });
-                break;
+            case 2:
+            case 1:
             default:
-                setPassStrMsg({ class: 'bad', message: 'very bad' });
+                setPassStrMsg({ class: 'very-weak', message: 'too weak' });
         };
     }, [passStr]);
 
@@ -47,11 +45,13 @@ const Login = props => {
     };
 
     function handleOnChange(e) {
-        setLoginError(false);
+        setShowErrMsg({ show: false, message: ''});
         setPasswordErr(false);
         if(e.target.name === 'username') props.loginRegVals.setUsername(e.target.value);
         if(e.target.name === 'password') {
-            setShowPassMsg(true);
+            if ( props.location.pathname === "/register") {
+                setShowErrMsg({ show: true, message: '' });
+            }
             setPassword(e.target.value);
             setPassStr(zxcvbn(e.target.value).score);
         }
@@ -60,7 +60,7 @@ const Login = props => {
     async function handleSubmitLogin(e) {
         e.preventDefault();
         // console.log('login', props.loginRegVals.username, password);
-        setLoginError(false);
+        setShowErrMsg({show: false, message: '' });
         await login({ username: props.loginRegVals.username, password })
                             .then(res => {
                                 if(res.status === 200) {
@@ -68,14 +68,17 @@ const Login = props => {
                                     setLocalStorage("username", res.data.username);
                                     props.history.push('/')
                                 } else {
-                                    setLoginError(true);
+                                    setShowErrMsg({ show: true, message: "Your username or password was incorrect."});
                                 }
                             })
     }
 
     async function handleSubmitRegister (e) {
         e.preventDefault();
-
+        if (password.length < minPassLen) {
+            setPasswordErr(true);
+            return false;
+        }
         await register({ username: props.loginRegVals.username, password })
                             .then(res => {
                                 console.log('register', res);
@@ -101,7 +104,7 @@ const Login = props => {
                     <div className="login">
                         <form onSubmit={handleSubmitLogin}>
                             {
-                                loginError && <div className="error">Your username or password was incorrect.</div>
+                                showErrMsg.show && <div className="error">{showErrMsg.message}</div>
                             } 
                             <div>
                                 <input id="username" onChange={handleOnChange} value={!props.loginRegVals.username ? '' : props.loginRegVals.username} name="username" type="text" placeholder="username" autoComplete="username" required />
@@ -109,7 +112,7 @@ const Login = props => {
                             </div>
                             <div>
                                 <input id="password" onChange={handleOnChange} value={!password ? '' : password} name="password" type="password" placeholder="password" autoComplete="current-password" required />
-                        <label htmlFor="password">password</label>
+                                <label htmlFor="password">password</label>
                             </div>
                             <button type="submit">Login</button>
                         </form>
@@ -123,9 +126,9 @@ const Login = props => {
                             </div>
                                 
                             <div>
-                                <button onClick={toggleShowPass} className='toggle-show-pass'><FontAwesomeIcon name={`${ showPassword ? 'eye-slash' : 'eye' }`} /></button>
                                 <input id="reg-password" className={ passwordErr ? 'pass-error' : '' } onChange={handleOnChange} value={!password ? '' : password} name="password" type={`${ showPassword ? 'text' : 'password' }`} placeholder="password" autoComplete="new-password" required />
-                                <label htmlFor="reg-password">password <span className={ showPassMsg ? `str-indicator ${ passStrMsg.class }` : 'hide' }>{passStrMsg.message}</span></label>
+                                <button aria-hidden="true" onClick={toggleShowPass} className='toggle-show-pass'><FontAwesomeIcon name={`${ showPassword ? 'eye-slash' : 'eye' }`} /></button>
+                                <label htmlFor="reg-password">password <span className={ showErrMsg.show ? `str-indicator ${ passStrMsg.class }` : 'hide' }>{passStrMsg.message}</span></label>
                             </div>
                             <button type="submit">Register</button>
                         </form>
