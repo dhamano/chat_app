@@ -8,6 +8,7 @@ import { setLocalStorage } from '../utilities';
 
 const Login = props => {
     const [password, setPassword]               = useState(false);
+    const [usernameErr, setUsernameErr]         = useState(false);
     const [passwordErr, setPasswordErr]         = useState(false);
     const [showPassword, setShowPassword]       = useState(false);
     const [passStr, setPassStr]                 = useState(0);
@@ -23,19 +24,21 @@ const Login = props => {
 
     const minPassStr = process.env.PASS_STR || 3;
     const minPassLen = process.env.PASS_LEN || 8;
-
+    let count = 0;
     useEffect( () => {
+        count++;
+        // console.log('passStr', passStr, passStrMsg, count);
         switch (passStr) {
             case 4:
-                setPassStrMsg({ class: 'good', message: 'good' });
+                setPassStrMsg({ show: true, class: 'good', message: 'good' });
                 break;
             case 3:
-                setPassStrMsg({ class: 'okay', message: 'okay' });
+                setPassStrMsg({ show: true, class: 'okay', message: 'okay' });
                 break;
             case 2:
             case 1:
             default:
-                setPassStrMsg({ class: 'very-weak', message: 'too weak' });
+                setPassStrMsg({ show: true, class: 'very-weak', message: 'too weak' });
         };
     }, [passStr]);
 
@@ -50,7 +53,8 @@ const Login = props => {
         if(e.target.name === 'username') props.loginRegVals.setUsername(e.target.value);
         if(e.target.name === 'password') {
             if ( props.location.pathname === "/register") {
-                setShowErrMsg({ show: true, message: '' });
+                console.log('register change');
+                setPassStrMsg({ show: true, ...passStrMsg});
             }
             setPassword(e.target.value);
             setPassStr(zxcvbn(e.target.value).score);
@@ -75,10 +79,29 @@ const Login = props => {
 
     async function handleSubmitRegister (e) {
         e.preventDefault();
-        if (password.length < minPassLen) {
-            setPasswordErr(true);
-            return false;
+        let error = 0;
+        if (props.loginRegVals.username.length < 2) {
+            error++;
+            setUsernameErr(true);
         }
+        if (password.length < minPassLen) {
+            error += 2;
+            setPasswordErr(true);
+        }
+        switch (error) {
+            case 1:
+                setShowErrMsg({ show: true, message: 'username too short'})
+                return false;
+            case 2:
+                setShowErrMsg({ show: true, message: 'password too weak'})
+                return false;
+            case 3:
+                setShowErrMsg({ show: true, message: 'username too short and password too weak'})
+                return false;
+            default:
+                break;
+        }
+
         await register({ username: props.loginRegVals.username, password })
                             .then(res => {
                                 console.log('register', res);
@@ -120,15 +143,18 @@ const Login = props => {
                     ) : (
                     <div className="register">
                         <form onSubmit={handleSubmitRegister}>
+                            {
+                                showErrMsg.show && <div className="error">{showErrMsg.message}</div>
+                            } 
                             <div>
-                                <input id="reg-username" onChange={handleOnChange} value={!props.loginRegVals.username ? '' : props.loginRegVals.username} name="username" type="text" placeholder="username" autoComplete="username" required />
+                                <input id="reg-username" className={ usernameErr ? 'input-error' : '' } onChange={handleOnChange} value={!props.loginRegVals.username ? '' : props.loginRegVals.username} name="username" type="text" placeholder="username" autoComplete="username" required />
                                 <label htmlFor="reg-username">username</label>
                             </div>
                                 
                             <div>
-                                <input id="reg-password" className={ passwordErr ? 'pass-error' : '' } onChange={handleOnChange} value={!password ? '' : password} name="password" type={`${ showPassword ? 'text' : 'password' }`} placeholder="password" autoComplete="new-password" required />
+                                <input id="reg-password" className={ passwordErr ? 'input-error' : '' } onChange={handleOnChange} value={!password ? '' : password} name="password" type={`${ showPassword ? 'text' : 'password' }`} placeholder="password" autoComplete="new-password" required />
                                 <button aria-hidden="true" onClick={toggleShowPass} className='toggle-show-pass'><FontAwesomeIcon name={`${ showPassword ? 'eye-slash' : 'eye' }`} /></button>
-                                <label htmlFor="reg-password">password <span className={ showErrMsg.show ? `str-indicator ${ passStrMsg.class }` : 'hide' }>{passStrMsg.message}</span></label>
+                                <label htmlFor="reg-password">password <span className={ passStrMsg.show ? `str-indicator ${ passStrMsg.class }` : 'hide' }>{passStrMsg.message}</span></label>
                             </div>
                             <button type="submit">Register</button>
                         </form>
