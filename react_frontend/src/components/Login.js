@@ -26,8 +26,6 @@ const Login = props => {
     const minPassLen = process.env.PASS_LEN || 8;
     let count = 0;
     useEffect( () => {
-        count++;
-        // console.log('passStr', passStr, passStrMsg, count);
         switch (passStr) {
             case 4:
                 setPassStrMsg({ show: true, class: 'good', message: 'good' });
@@ -88,15 +86,31 @@ const Login = props => {
             error += 2;
             setPasswordErr(true);
         }
+        if (passStr < minPassStr) {
+            error += 4;
+            setPasswordErr(true);
+        }
         switch (error) {
             case 1:
                 setShowErrMsg({ show: true, message: 'username too short'})
                 return false;
             case 2:
-                setShowErrMsg({ show: true, message: 'password too weak'})
+                setShowErrMsg({ show: true, message: 'password too short'})
                 return false;
             case 3:
+                setShowErrMsg({ show: true, message: 'username too short and password too short'})
+                return false;
+            case 4:
+                setShowErrMsg({ show: true, message: 'password too weak'})
+                return false;
+            case 5:
                 setShowErrMsg({ show: true, message: 'username too short and password too weak'})
+                return false;
+            case 6:
+                setShowErrMsg({ show: true, message: 'password too short and weak'})
+                return false;
+            case 7:
+                setShowErrMsg({ show: true, message: 'username and password too short and weak'})
                 return false;
             default:
                 break;
