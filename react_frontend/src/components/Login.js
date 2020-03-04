@@ -125,6 +125,7 @@ const Login = props => {
                                     props.history.push('/')
                                 } else {
                                     console.log('ERROR');
+                                    setShowErrMsg({ show: true, message: 'Please try a different username.' })
                                 }
                             })
     }
@@ -167,7 +168,7 @@ const Login = props => {
                                 
                             <div>
                                 <input id="reg-password" className={ passwordErr ? 'input-error' : '' } onChange={handleOnChange} value={!password ? '' : password} name="password" type={`${ showPassword ? 'text' : 'password' }`} placeholder="password" autoComplete="new-password" required />
-                                <button aria-hidden="true" onClick={toggleShowPass} className='toggle-show-pass'><FontAwesomeIcon name={`${ showPassword ? 'eye-slash' : 'eye' }`} /></button>
+                                <a aria-hidden="true" onClick={toggleShowPass} className='toggle-show-pass'><FontAwesomeIcon name={`${ showPassword ? 'eye-slash' : 'eye' }`} /></a>
                                 <label htmlFor="reg-password">password <span className={ passStrMsg.show ? `str-indicator ${ passStrMsg.class }` : 'hide' }>{passStrMsg.message}</span></label>
                             </div>
                             <button type="submit">Register</button>
