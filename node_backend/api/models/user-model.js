@@ -43,5 +43,6 @@ async function add(userCreds) {
     catch(err) {
         console.log("add: ERR",err);
         console.error(err);
+        return err;
     }
 };
