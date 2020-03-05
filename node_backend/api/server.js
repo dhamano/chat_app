@@ -11,6 +11,8 @@ const userRouter = require('./routes/auth');
 const app = express();
 const router = express.Router();
 
+process.env.UV_THREADPOOL_SIZE = 8;
+
 // initialize http server
 const server = http.createServer(app);
 
