@@ -13,6 +13,9 @@ const router = express.Router();
 
 process.env.UV_THREADPOOL_SIZE = 8;
 
+// Websockets
+let sockets = {};
+
 // initialize http server
 const server = http.createServer(app);
 
@@ -47,16 +50,9 @@ app.use('/', router);
 
 wss.on('connection', ( ws ) => {
     console.log('connection…');
-
-    // on connect message
-    ws.on('message', ( message ) => {
-        console.log('received: %s', message);
-        connectedUsers.push(message);
-    });
-
-    ws.send('message from server at: ' + new Date());
+    sockets[ws.id] = ws;
 });
 
-
+wss.installHandlers(server, { prefix: '/websockets' })
 
 module.exports = app;
