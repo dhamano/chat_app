@@ -2,6 +2,8 @@ const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
 const helmet = require('helmet');
+const queryString = require('querystring');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const slowDown = require('express-slow-down');
 const rateLimit = require('express-rate-limit');
@@ -13,14 +15,14 @@ const router = express.Router();
 
 process.env.UV_THREADPOOL_SIZE = 8;
 
-// Websockets
+// Websocket clients
 let sockets = {};
 
 // initialize http server
 const server = http.createServer(app);
 
 // initialize WebSocket server
-const wss = new WebSocket.Server({ server });
+const wss = new WebSocket('ws://localhost.com/ws', { port: 1337 })//.Server({ server });
 
 process.title = 'node-chat-app';
 
@@ -44,15 +46,19 @@ app.use(helmet());
 app.use(express.json());
 app.use(cors());
 
+// use bodyParser() to get data from POST
+app.use(bodyParser.urlencoded({ extend: true }));
+app.use(bodyParser.json());
+
 app.use('/auth', userRouter);
 app.use('/', router);
 // server.get('/', (req, res) => res.status(200).send('<h2>5x5</h2>'))
 
-wss.on('connection', ( ws ) => {
+wss.on('connection', ( conn ) => {
     console.log('connection…');
-    sockets[ws.id] = ws;
+    sockets[conn.id] = conn;
 });
 
-wss.installHandlers(server, { prefix: '/websockets' })
+// wss.installHandlers( server, { prefix: '/websockets' } );
 
 module.exports = app;
