@@ -7,31 +7,31 @@ import Messaging from './components/Messaging';
 
 const App = (props) => {
 
-    const [isCompatible, setIsCompatible] = useState(true);
-    const [loginOrReg, setLoginOrReg] = useState('Login');
-    const [username, setUsername] = useState(false);
+    const [isCompatible, setIsCompatible]   = useState(true);
+    const [loginOrReg, setLoginOrReg]       = useState('Login');
+    const [username, setUsername]           = useState(false);
 
-    const [isDisabled, setIsDisabled] = useState(true);
-    const [userColor, setUserColor] = useState(false);
-    const [userMessage, setUserMessage] = useState('')
+    const [isDisabled, setIsDisabled]       = useState(true);
+    const [userColor, setUserColor]         = useState(false);
+    const [userMessage, setUserMessage]     = useState('')
 
     window.WebSocket = window.WebSocket || window.MozWebSocket;
 
+    // useEffect(() => {
+    //     function checkIfCompaitbleWithWebSocket () {
+    //         let compatible = window.WebSocket || window.MozWebSocket;
+    //         if(compatible) return true;
+    //         return false
+    //     }
+
+    //     let isCompatible = checkIfCompaitbleWithWebSocket();
+    //     setIsCompatible(isCompatible);
+    //     return function cleanup() {
+    //         checkIfCompaitbleWithWebSocket();
+    //     };
+    // }, []);
+
     useEffect(() => {
-        function checkIfCompaitbleWithWebSocket () {
-            let compatible = window.WebSocket || window.MozWebSocket;
-            if(compatible) return true;
-            return false
-        }
-
-        let isCompatible = checkIfCompaitbleWithWebSocket();
-        setIsCompatible(isCompatible);
-        return function cleanup() {
-            checkIfCompaitbleWithWebSocket();
-        };
-    }, []);
-
-    useEffect( () => {
         if( props.location.pathname === "/register") {
             setLoginOrReg('Register');
             props.history.push('/register');
