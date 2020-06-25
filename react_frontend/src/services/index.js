@@ -1,7 +1,7 @@
  import axios from 'axios';
 // import axiosWithAuth from '../utilities/axiosWIthAuth';
 
-const host = process.env.BASE_HOST || 'http://localhost:8000';
+const host = process.env.REACT_APP_BASE_HOST;
 
 export const register = async (userCred) => {
     let { username, password } = userCred;
@@ -21,7 +21,7 @@ export const register = async (userCred) => {
 
 }
 
-export const login = async (userCred) => {
+export const login = async (userCred) => { console.log('HOST: ', host);
     let { username, password } = userCred;
     if (!username && !password) return { message: 'username and password require' };
     if (!username) return { message: 'username required' };

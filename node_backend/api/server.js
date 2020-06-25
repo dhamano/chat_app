@@ -22,7 +22,7 @@ let sockets = {};
 const server = http.createServer(app);
 
 // initialize WebSocket server
-const wss = new WebSocket('ws://localhost.com/ws', { port: 1337 })//.Server({ server });
+// const wss = new WebSocket('ws://localhost.com/ws', { port: 1337 })//.Server({ server });
 
 process.title = 'node-chat-app';
 
@@ -54,10 +54,10 @@ app.use('/auth', userRouter);
 app.use('/', router);
 // server.get('/', (req, res) => res.status(200).send('<h2>5x5</h2>'))
 
-wss.on('connection', ( conn ) => {
-    console.log('connection…');
-    sockets[conn.id] = conn;
-});
+// wss.on('connection', ( conn ) => {
+//     console.log('connection…');
+//     sockets[conn.id] = conn;
+// });
 
 // wss.installHandlers( server, { prefix: '/websockets' } );
 

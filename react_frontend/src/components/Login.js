@@ -7,24 +7,24 @@ import { login, register } from '../services';
 import { setLocalStorage } from '../utilities';
 
 const Login = props => {
-    const [password, setPassword]               = useState(false);
-    const [usernameErr, setUsernameErr]         = useState(false);
-    const [passwordErr, setPasswordErr]         = useState(false);
-    const [showPassword, setShowPassword]       = useState(false);
-    const [passStr, setPassStr]                 = useState(0);
-    const [passStrMsg, setPassStrMsg]           = useState({
-                                                      show: false,
-                                                      class: '',
-                                                      message: ''
-                                                  });
-    const [showErrMsg, setShowErrMsg]           = useState({
-                                                      show: false,
-                                                      message: ''
-                                                  });
+    const [password, setPassword]           = useState(false);
+    const [usernameErr, setUsernameErr]     = useState(false);
+    const [passwordErr, setPasswordErr]     = useState(false);
+    const [showPassword, setShowPassword]   = useState(false);
+    const [passStr, setPassStr]             = useState(0);
+    const [passStrMsg, setPassStrMsg]       = useState({
+                                                  show: false,
+                                                  class: '',
+                                                  message: ''
+                                              });
+    const [showErrMsg, setShowErrMsg]       = useState({
+                                                  show: false,
+                                                  message: ''
+                                              });
 
     const minPassStr = process.env.PASS_STR || 3;
     const minPassLen = process.env.PASS_LEN || 8;
-    let count = 0;
+
     useEffect( () => {
         switch (passStr) {
             case 4:
@@ -168,7 +168,7 @@ const Login = props => {
                                 
                             <div>
                                 <input id="reg-password" className={ passwordErr ? 'input-error' : '' } onChange={handleOnChange} value={!password ? '' : password} name="password" type={`${ showPassword ? 'text' : 'password' }`} placeholder="password" autoComplete="new-password" required />
-                                <a aria-hidden="true" onClick={toggleShowPass} className='toggle-show-pass'><FontAwesomeIcon name={`${ showPassword ? 'eye-slash' : 'eye' }`} /></a>
+                                <a href="#reg-password" aria-hidden="true" onClick={toggleShowPass} className='toggle-show-pass'><FontAwesomeIcon name={`${ showPassword ? 'eye-slash' : 'eye' }`} /></a>
                                 <label htmlFor="reg-password">password <span className={ passStrMsg.show ? `str-indicator ${ passStrMsg.class }` : 'hide' }>{passStrMsg.message}</span></label>
                             </div>
                             <button type="submit">Register</button>
