@@ -4,7 +4,11 @@ const Messaging = props => {
     // console.log('PROPS',props)
     return (
         <div className="chat-wrapper">
-            <div id="content"></div>
+            <div id="content">
+                <p>
+                    It's <time dateTime={response}>{response}</time>
+                </p>
+            </div>
             <div>
                 { props.misDisabled ? (
                     <span id="status">Connecting&hellip;</span>

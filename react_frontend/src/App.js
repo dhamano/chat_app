@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect, Route } from 'react-router-dom';
-
 import PrivateRoute from './utilities/PrivateRoute';
+
+import socketIOClient from 'socket.io-client';
+
 import Login from './components/Login';
 import Messaging from './components/Messaging';
 
 const App = (props) => {
 
-    const [isCompatible, setIsCompatible]   = useState(true);
+    const [isCompatible, setIsCompatible]   = useState(false);
+    const [response, setResponse] = useState('');
+
     const [loginOrReg, setLoginOrReg]       = useState('Login');
     const [username, setUsername]           = useState(false);
 
@@ -15,21 +19,26 @@ const App = (props) => {
     const [userColor, setUserColor]         = useState(false);
     const [userMessage, setUserMessage]     = useState('')
 
-    window.WebSocket = window.WebSocket || window.MozWebSocket;
+    useEffect(() => {
+        function checkIfCompaitbleWithWebSocket () {
+            let compatible = window.WebSocket || window.MozWebSocket;
+            if(compatible) return true;
+            return false;
+        }
 
-    // useEffect(() => {
-    //     function checkIfCompaitbleWithWebSocket () {
-    //         let compatible = window.WebSocket || window.MozWebSocket;
-    //         if(compatible) return true;
-    //         return false
-    //     }
+        let isCompatible = checkIfCompaitbleWithWebSocket();
+        setIsCompatible(isCompatible);
+        return function cleanup() {
+            checkIfCompaitbleWithWebSocket();
+        };
+    }, []);
 
-    //     let isCompatible = checkIfCompaitbleWithWebSocket();
-    //     setIsCompatible(isCompatible);
-    //     return function cleanup() {
-    //         checkIfCompaitbleWithWebSocket();
-    //     };
-    // }, []);
+    useEffect(() => {
+        const socket = socketIOClient(process.env.REACT_APP_SOCKETIO_ENDPOINT);
+        socket.on("FromAPI", data => {
+            setResponse(data);
+        });
+    }, []);
 
     useEffect(() => {
         if( props.location.pathname === "/register") {
@@ -98,7 +107,7 @@ const App = (props) => {
         <div className="App">
            <Route exact path="/" render={ props => localStorage.getItem("token") && localStorage.getItem("token") !== "undefined" ? <Redirect to="/home" /> : <Login {...props} loginRegVals={loginRegVals}  /> } />
            <Route path="/register" render={ props => <Login {...props} loginRegVals={loginRegVals}  /> } />
-           <PrivateRoute path="/home" component={Messaging}  {...msgVals} />
+           <PrivateRoute path="/home" component={Messaging}  {...msgVals} response={response} />
         </div>
     );
 }
