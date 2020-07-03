@@ -8,22 +8,27 @@ const Messaging = props => {
     const [message, setMessage] = useState('');
     const [textArea, setTextArea] = useState([]);
 
-    socket.on('message', (data) => {
+    socket.on('RECIEVE_MESSAGE', (data) => {
         addMessage(data);
     });
 
     function addMessage(data) {
-        console.log(data);
+        console.log('addMessage',data);
         setTextArea([...textArea, data]);
     }
 
-    function sendMessage(e) {
+    function messageChangeHandler(e) {
         e.preventDefault();
-        socket.emit('sendMessage', {
-            author: props.username,
+        setMessage(e.target.value);
+    }
+
+    function sendMessage(e) {
+        console.log('sendMessage MESSAGE', message);
+        e.preventDefault();
+        socket.emit('SEND_MESSAGE', {
+            author: "hello",
             message
         });
-        addMessage(message);
         setMessage('');
     };
 
@@ -44,7 +49,7 @@ const Messaging = props => {
                 ) : (
                     <div>
                         <div>{props.userMessage}</div>
-                        <input type="text" id="input" placeholder="type msg here" />
+                        <input type="text" id="input" onChange={messageChangeHandler} value={message} placeholder="type msg here" />
                         <button type="submit" id="send" onClick={sendMessage}>Send</button>
                     </div>
                 )}
