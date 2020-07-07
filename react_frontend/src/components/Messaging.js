@@ -26,7 +26,7 @@ const Messaging = props => {
         console.log('sendMessage MESSAGE', message);
         e.preventDefault();
         socket.emit('SEND_MESSAGE', {
-            author: "hello",
+            author: props.msgVals.username,
             message
         });
         setMessage('');

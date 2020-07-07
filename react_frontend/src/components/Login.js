@@ -68,6 +68,7 @@ const Login = props => {
                                 if(res.status === 200) {
                                     setLocalStorage("token", res.data.token);
                                     setLocalStorage("username", res.data.username);
+                                    props.loginRegVals.setUsername(res.data.username);
                                     props.history.push('/home')
                                 } else {
                                     setShowErrMsg({ show: true, message: "Your username or password was incorrect."});
@@ -122,6 +123,7 @@ const Login = props => {
                                 if ( res.status === 201 ) {
                                     setLocalStorage("token", res.data.token);
                                     setLocalStorage("username", res.data.username);
+                                    props.loginRegVals.setUsername(res.data.username);
                                     props.history.push('/home')
                                 } else {
                                     console.log('ERROR');
