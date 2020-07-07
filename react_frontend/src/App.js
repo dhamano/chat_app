@@ -10,11 +10,16 @@ const App = (props) => {
     const [isCompatible, setIsCompatible]   = useState(false);
 
     const [loginOrReg, setLoginOrReg]       = useState('Login');
-    const [username, setUsername]           = useState(false);
+    const [username, setUsername]           = useState('');
 
-    const [isDisabled, setIsDisabled]       = useState(true);
-    const [userColor, setUserColor]         = useState(false);
-    const [userMessage, setUserMessage]     = useState('')
+    const [chatSettings, setChatSettings]   = useState({
+                                                    isDiabled: true,
+                                                    userColor: '#333',
+                                                    chatRoom: '',
+                                                })
+    // const [isDisabled, setIsDisabled]       = useState(true);
+    // const [userColor, setUserColor]         = useState(false);
+    // const [userMessage, setUserMessage]     = useState('')
 
     useEffect(() => {
         function checkIfCompaitbleWithWebSocket () {
@@ -56,12 +61,15 @@ const App = (props) => {
 
 
     let msgVals = {
-        isDisabled,
+        // isDisabled,
+        // username,
+        // userColor,
+        // setUserColor,
+        // userMessage,
+        // setUserMessage
         username,
-        userColor,
-        setUserColor,
-        userMessage,
-        setUserMessage
+        chatSettings,
+        setChatSettings
     }
     
     let loginRegVals = {
