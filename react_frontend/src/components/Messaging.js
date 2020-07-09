@@ -1,14 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import socketIOClient from 'socket.io-client';
-const socket = socketIOClient(process.env.REACT_APP_SOCKETIO_ENDPOINT);
-console.log('socket',socket);
 
 const Messaging = props => {
+    
+    let username = localStorage.getItem('username') || 'user';
+    let room = 'general';
+
+    if (props.msgVals) {
+        username = props.username;
+        room = props.chatSettings.chatRoom;
+    }
+    
+    const socket = socketIOClient(process.env.REACT_APP_SOCKETIO_ENDPOINT);
+
     const [message, setMessage] = useState('');
     const [textArea, setTextArea] = useState([]);
 
-    socket.on('RECIEVE_MESSAGE', (data) => {
+    useEffect( () => {
+        socket.emit('join', {
+            username: 'user',
+            room: props.chatSettings.chatRoom || 'general',
+        })
+    }, [props.chatSettings.chatRoom])
+
+    socket.on('message', (data) => {
         addMessage(data);
     });
 
@@ -25,8 +41,8 @@ const Messaging = props => {
     function sendMessage(e) {
         console.log('sendMessage MESSAGE', message);
         e.preventDefault();
-        socket.emit('SEND_MESSAGE', {
-            author: props.msgVals.username,
+        socket.emit('sendMessage', {
+            // author: props.msgVals.username,
             message
         });
         setMessage('');
